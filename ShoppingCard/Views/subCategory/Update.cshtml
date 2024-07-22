@@ -1,0 +1,50 @@
+﻿@model subCategory
+@{
+    ViewData["Title"] = "Update";
+}
+
+<h1>Update</h1>
+
+<form asp-action="Update" asp-controller="subCategory" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+       @*  <input type="text" hidden class="form-control" asp-for="Id" id="subCategoryId" /> *@
+
+    </div>
+
+    <div class="form-group">
+
+        <label asp-for="Image" class="control-label">@Resource.LableCategoryImage</label>
+        <input type="file" class="form-control" asp-for="Image" id="ImageSubCategory" />
+
+        <span asp-validation-for=" Image" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+
+        <label asp-for=" Title" class="control-label">@Resource.LableTitle</label>
+        <input type="text" class="form-control" asp-for=" Title" id="SubcategoryTitle" />
+
+        <span asp-validation-for=" Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+
+        <label asp-for=" Description" class="control-label">@Resource.LableDescription</label>
+        <input type="text" class="form-control" asp-for=" Description" id="Description" />
+
+        <span asp-validation-for=" Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+
+        <label asp-for=" CategoryId" class="control-label">@Resource.lableCategoryName</label>
+        <select class="form-control" asp-for=" CategoryId" id="CategoryId" asp-items="@(new SelectList( ViewBag.CategoeyTitle ,"Id","Title"))">
+            <option value="">@Resource.LableSelectCategory ...</option>
+
+        </select>
+
+        <span asp-validation-for=" CategoryId" class="text-danger"></span>
+    </div>
+
+    <div class="modal-footer">
+        <input type="submit" class="btn btn-success btn-sm" value="Edit" id="btnSave" />
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+    </div>
+</form>

@@ -1,0 +1,80 @@
+﻿@model List<subCategory>
+@inject RoleManager<IdentityRole> roleManger
+@inject UserManager<ApplicationUser> userManger
+@{
+    ViewData["Title"] = "Edit";
+}
+ 
+
+<section id="mobile-products" class="product-store position-relative padding-large" style="margin-top:5px">
+
+    <div class="container">
+        <div class="row">
+            <div class="btn-right">
+                <a href="shop.html" class="btn btn-medium btn-normal text-uppercase">Mobiles Category</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="card-tools">
+                        <!-- Button trigger modal -->
+                        <a href="/Category/Categories" type="button" class="btn btn-outline-info rounded-pill">
+                            New SubCategory
+                        </a>
+                    </div>
+                }
+
+            </div>
+            @foreach (var item in Model)
+                {
+
+                    <div class="col-md-6 col-lg-3  d-flex align-items-stretch mb-5 mb-lg-5  ">
+                        <div class="product-card position-relative ">
+                            <div class="image-holder">
+
+                                <img src="/@Helper.imagesSaveSubCategory@item.Image" alt="product-item" class="img-fluid" style="width:250Px;height:400px">
+                            </div>
+                            <div class="cart-concern position-absolute">
+                                <div class="cart-button d-flex">
+                                    <a href="#" class="btn btn-medium btn-black">Start shopping journey<svg class="cart-outline"><use xlink:href="#cart-outline"></use></svg></a>
+                                </div>
+                            </div>
+                            <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
+                                <h3 class="card-title text-uppercase">
+                                    <p>@item.Title</p>
+                                    <br />
+                                    <p style="font-size:25px">@item.Description</p>
+                               
+                                </h3>
+
+                            </div>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="container-fluid">
+                                    <button class="btn btn-success">
+                                    @Html.ActionLink("Update", "Update", "subCategory", new { id = item.Id }) 
+                                    </button>
+                                    <button class="btn btn-danger delete-item" data-Id="@item.Id" >
+                                        Delete
+                                    </button>
+                                   
+
+                                  
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                }
+        </div>
+    </div>
+
+    </section>
+
+
+
+@section Scripts {
+    <script src="~/Models/subCategories.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/Views/Shared/ValidationScriptsPartial"></script>
+
+}
+

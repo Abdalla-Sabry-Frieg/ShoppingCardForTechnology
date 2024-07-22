@@ -1,0 +1,176 @@
+﻿@model ItemsViewModel
+@inject RoleManager<IdentityRole> roleManger
+@inject UserManager<ApplicationUser> userManger
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<section id="mobile-products" class="product-store position-relative padding-large" style="margin-top:5px">
+    <div class="container">
+        <div class="row">
+          
+            <div class="display-header d-flex justify-content-between pb-3">
+                <h2 class="display-7 text-dark text-uppercase text-center">Items</h2>
+                    <div class="btn-right">
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="card-tools">
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-outline-info rounded-pill" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Reset()">
+                                        @Resource.btnSaveNewItem
+                                    </button>
+                                </div>
+                            }
+                    </div>
+            </div>
+
+            @foreach (var item in Model.items)
+            {
+
+              <div class="col-md-6 col-lg-3  d-flex align-items-stretch mb-5 mb-lg-5  ">
+                 
+                    <div class="swiper-slide">
+                        <div class="product-card position-relative">
+                            <span>@item.Category.Title</span>
+                            <div class="image-holder">
+                                <img src="~/Images/Items/@item.Image" alt="product-item" class="img-fluid" style="width:250Px;height:400px">
+                            </div>
+                            <div class="cart-concern position-absolute">
+                                <div class="cart-button d-flex">
+                                    <a href="#" class="btn btn-medium btn-black">Add to Cart<svg class="cart-outline"><use xlink:href="#cart-outline"></use></svg></a>
+                                </div>
+                            </div>
+                            <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
+                                <h3 class="card-title text-uppercase">
+                                    <span>@item.Title</span>
+                                </h3>
+                                <span class="item-price text-primary me-2">@item.Price.ToString("C")</span>
+                            </div>
+                            <div class="card-detail d-flex justify-content-between align-items-baseline pt-3">
+                                <span class="item-price text-primary pb-3">@item.Description</span>
+                            </div>
+                        </div>
+                   
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="container-fluid">
+                            <input type="button" class="btn btn-success btn-sm" onclick="Edit('@item.Image','@item.Price','@item.Title','@item.Description','@item.Id','@item.CategoryId')" value="@Resource.btnEdit" data-bs-toggle="modal" data-bs-target="#exampleModal" />
+                                <span>  |  </span>
+                                <input type="button" class="btn btn-danger btn-sm" onclick="Delete('@item.Id')" value="@Resource.btnDelete" data-bs-toggle="modal" />
+                             </div>
+                           
+                        }
+                    </div>
+
+              </div>
+                   
+
+            }
+       </div>
+   </div>
+
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="title">@Resource.btnSaveNewItem</h1>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="AddOrpUdate" asp-controller="Items" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="text" hidden class="form-control" asp-for="@Model.NewItem.ItemId" id="ItemId" />
+
+                    </div>
+                    
+                    <div class="form-group">
+
+                        <label asp-for="@Model.NewItem.Image" class="control-label">@Resource.LableItemImage</label>
+                        <input type="file" class="form-control" asp-for="@Model.NewItem.Image" id="ImageItem" />
+
+                        <span asp-validation-for="@Model.NewItem.Image" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+
+                        <label asp-for="@Model.NewItem.Title" class="control-label">@Resource.LableTitle</label>
+                        <input type="text" class="form-control" asp-for="@Model.NewItem.Title" id="ItemTitle" />
+
+                        <span asp-validation-for="@Model.NewItem.Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+
+                        <label asp-for="@Model.NewItem.Price" class="control-label">@Resource.LablePrice</label>
+                        <input type="text" class="form-control" asp-for="@Model.NewItem.Price" id="Price" />
+
+                        <span asp-validation-for="@Model.NewItem.Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+
+                        <label asp-for="@Model.NewItem.Description" class="control-label">@Resource.LableDescription</label>
+                        <input type="text" class="form-control" asp-for="@Model.NewItem.Description" id="Description" />
+
+                        <span asp-validation-for="@Model.NewItem.Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+
+                        <label asp-for="@Model.NewItem.CategoryId" class="control-label">@Resource.lableCategoryName</label>
+                        <select class="form-control" asp-for="@Model.NewItem.CategoryId" id="Select" asp-items="@(new SelectList( ViewBag.CategoeyTitle ,"Id","Title"))">
+                            <option value="">@Resource.LableSelectCategory</option>
+
+                        </select>
+
+                        <span asp-validation-for="@Model.NewItem.CategoryId" class="text-danger"></span>
+                    </div>
+                  
+
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-success btn-sm" value="@Resource.save " id="btnSave" />
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+@section Scripts {
+
+    @if (!string.IsNullOrEmpty(Context.Session.GetString("msgType")))
+    {
+        if (Context.Session.GetString("msgType") == "Success")
+        {
+            <script>
+
+                Swal.fire({
+                    title: '@Context.Session.GetString("title")',
+                    text: '@Html.Raw(@Context.Session.GetString("msg"))',
+                    icon: 'success'
+
+                });
+            </script>
+
+        }
+        else
+        {
+            <script>
+                Swal.fire({
+                    title: '@Context.Session.GetString("title")',
+                    text: '@Html.Raw(@Context.Session.GetString("msg"))',
+                    icon: 'error'
+                });
+            </script>
+        }
+        Context.Session.SetString("msgType", "");
+    }
+
+
+
+    <script src="~/models/Items.js"></script>
+    <script src="~/Views/Shared/_ValidationScriptsPartial"></script>
+}
